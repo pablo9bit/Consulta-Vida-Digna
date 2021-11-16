@@ -28,7 +28,7 @@ const FormConsulta = () => {
     if (recaptchaValue) {
       if (cuil.trim().length !== 11) {
         setAlerta({
-          msg: "Debe ingresar su Número de CUIL sin guiones",
+          msg: "Debe ingresar su Número de DNI sin guiones",
           class: "danger",
         });
       } else {
@@ -48,7 +48,7 @@ const FormConsulta = () => {
     const ref = db.ref("/");
 
     ref
-      .orderByChild("CUIL")
+      .orderByChild("NUMD_Q01")
       .equalTo(micuil)
       .once("value")
       .then((snapshot) => {
@@ -65,23 +65,11 @@ const FormConsulta = () => {
       });
   };
 
-  const sucursalBcaria = () => {
-    if (!resultado.data.BEN_COD_SUC && !resultado.data.APO_COD_SUC) {
-      return "Sucursal No Asignada";
-    }
-    if (resultado.data.BEN_COD_SUC && !resultado.data.APO_COD_SUC) {
-      return resultado.data.BEN_COD_SUC + " - " + resultado.data.BEN_SUCURSAL;
-    }
-    if (!resultado.data.BEN_COD_SUC && resultado.data.APO_COD_SUC) {
-      return resultado.data.APO_COD_SUC + " - " + resultado.data.APO_SUCURSAL;
-    }
-  };
-
-  const fechaInicio = () => {
-    let date = new Date(resultado.data.FECHA_INICIO);
-    date.setDate(date.getDate() + 1);
-
-    return date.toLocaleDateString("es-AR");
+  const convertirAFecha = (fecha) => {
+    const dia = fecha.substr(6, 8);
+    const mes = fecha.substr(4, 6);
+    const ano = fecha.substr(1, 4);
+    return dia + "/" + mes + "/" + ano;
   };
 
   return (
@@ -89,7 +77,7 @@ const FormConsulta = () => {
       <img src="header_banco_gente.png" width="100%" alt="bancodelagente" />
       <br></br>
       <div className="text-center p-1">
-        <b>CONSULTA DE SUCURSAL BANCARIA ASIGNADA</b>
+        <b>CONSULTA DE COBRO DE VIDA DIGNA</b>
       </div>
       <form onSubmit={onSubmit} style={{ margin: "30px" }}>
         <div style={{ display: "flex", justifyContent: "center" }}>
@@ -99,7 +87,7 @@ const FormConsulta = () => {
             name="cuil"
             className="form-control"
             id="cuil"
-            placeholder="Ingrese su CUIL (Sin Guiones)"
+            placeholder="Ingrese su DNI"
             onChange={onChange}
             value={cuil}
           />
@@ -130,38 +118,25 @@ const FormConsulta = () => {
         >
           <tbody>
             <tr>
-              <th scope="row">CUIT</th>
-              <td>{resultado.data.CUIL}</td>
+              <th scope="row">DNI</th>
+              <td>{resultado.data.NUMD_Q01}</td>
             </tr>
             <tr>
-              <th scope="row">Nombre</th>
-              <td>{resultado.data.NOMBRE}</td>
+              <th scope="row">Nombre y Apellido</th>
+              <td>{resultado.data.APEN_Q01}</td>
             </tr>
             <tr>
-              <th scope="row">Apellido</th>
-              <td>{resultado.data.APELLIDO}</td>
+              <th scope="row">Periodo de Cobro</th>
+              <td>
+                {convertirAFecha(resultado.data.FDES_Q01) +
+                  " hasta " +
+                  convertirAFecha(resultado.data.FHAS_Q01)}
+              </td>
             </tr>
             <tr>
               <th scope="row">Sucursal Bancaria</th>
-              <td>{sucursalBcaria()}</td>
+              <td>{resultado.data.SUCU_Q01}</td>
             </tr>
-            {resultado.data.CUIT !== "11-11111111-1" ? (
-              <>
-                <tr>
-                  <th scope="row">Empresa Donde Realizar la Práctica</th>
-                  <td>
-                    CUIT: {resultado.data.CUIT} - {resultado.data.N_EMPRESA}
-                  </td>
-                </tr>
-
-                {resultado.data.ID_FICHA ? (
-                  <tr>
-                    <th scope="row">Fecha Inicio Práctica</th>
-                    <td>{fechaInicio()}</td>
-                  </tr>
-                ) : null}
-              </>
-            ) : null}
           </tbody>
         </table>
       ) : null}
