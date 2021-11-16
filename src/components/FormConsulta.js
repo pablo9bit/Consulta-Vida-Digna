@@ -26,9 +26,9 @@ const FormConsulta = () => {
     const recaptchaValue = recaptchaRef.current.getValue();
 
     if (recaptchaValue) {
-      if (cuil.trim().length !== 11) {
+      if (cuil.trim().length >= 7) {
         setAlerta({
-          msg: "Debe ingresar su Número de DNI sin guiones",
+          msg: "Debe ingresar su Número de DNI",
           class: "danger",
         });
       } else {
@@ -135,7 +135,7 @@ const FormConsulta = () => {
             </tr>
             <tr>
               <th scope="row">Sucursal Bancaria</th>
-              <td>{resultado.data.SUCU_Q01}</td>
+              <td>{resultado.data.SUCU_Q01} - {resultado.data.DETALLE}</td>
             </tr>
           </tbody>
         </table>
