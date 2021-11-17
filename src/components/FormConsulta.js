@@ -26,7 +26,7 @@ const FormConsulta = () => {
     const recaptchaValue = recaptchaRef.current.getValue();
 
     if (recaptchaValue) {
-      if (cuil.trim().length >= 7) {
+      if (cuil.trim().length < 7) {
         setAlerta({
           msg: "Debe ingresar su Número de DNI",
           class: "danger",
@@ -49,7 +49,7 @@ const FormConsulta = () => {
 
     ref
       .orderByChild("NUMD_Q01")
-      .equalTo(micuil)
+      .equalTo(parseInt(micuil))
       .once("value")
       .then((snapshot) => {
         if (snapshot.val()) {
@@ -66,9 +66,9 @@ const FormConsulta = () => {
   };
 
   const convertirAFecha = (fecha) => {
-    const dia = fecha.substr(6, 8);
-    const mes = fecha.substr(4, 6);
-    const ano = fecha.substr(1, 4);
+    const dia = fecha.toString().substring(6, 8);
+    const mes = fecha.toString().substring(4, 6);
+    const ano = fecha.toString().substring(0, 4);
     return dia + "/" + mes + "/" + ano;
   };
 
@@ -128,14 +128,16 @@ const FormConsulta = () => {
             <tr>
               <th scope="row">Periodo de Cobro</th>
               <td>
-                {convertirAFecha(resultado.data.FDES_Q01) +
+                 {convertirAFecha(resultado.data.FDES_Q01) +
                   " hasta " +
-                  convertirAFecha(resultado.data.FHAS_Q01)}
+                  convertirAFecha(resultado.data.FHAS_Q01)} 
               </td>
             </tr>
             <tr>
               <th scope="row">Sucursal Bancaria</th>
-              <td>{resultado.data.SUCU_Q01} - {resultado.data.DETALLE}</td>
+              <td>
+                {resultado.data.SUCU_Q01} - Dir.: {resultado.data.DOMICILIO}
+              </td>
             </tr>
           </tbody>
         </table>
