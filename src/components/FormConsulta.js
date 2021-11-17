@@ -122,14 +122,14 @@ const FormConsulta = () => {
               <td>{resultado.data.NUMD_Q01}</td>
             </tr>
             <tr>
-              <th scope="row">Nombre y Apellido</th>
+              <th scope="row">Apellido y Nombre</th>
               <td>{resultado.data.APEN_Q01}</td>
             </tr>
             <tr>
               <th scope="row">Periodo de Cobro</th>
               <td>
-                 {convertirAFecha(resultado.data.FDES_Q01) +
-                  " hasta " +
+                 {" Desde " + convertirAFecha(resultado.data.FDES_Q01) +
+                  " Hasta " +
                   convertirAFecha(resultado.data.FHAS_Q01)} 
               </td>
             </tr>
