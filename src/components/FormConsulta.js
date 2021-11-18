@@ -139,6 +139,12 @@ const FormConsulta = () => {
                 {resultado.data.SUCU_Q01} - Dir.: {resultado.data.DOMICILIO}
               </td>
             </tr>
+            <tr>
+              <th scope="row">Cobrado</th>
+              <td>
+                {resultado.data.FECP_Q01 === 0 ? "No" : "Si"}
+              </td>
+            </tr>
           </tbody>
         </table>
       ) : null}
